@@ -161,11 +161,11 @@ export function WaitingRoomPage() {
   // Render game board if active
   if (roomStatus === 'active' && isGameActive) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center p-4">
-        <div className="max-w-4xl w-full">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center p-2 sm:p-4">
+        <div className="max-w-sm sm:max-w-2xl md:max-w-4xl w-full">
           {/* Game Code Display */}
-          <div className="text-center mb-4">
-            <p className="text-white/70 text-sm">Game Code: <span className="font-mono font-bold">{gameCode}</span></p>
+          <div className="text-center mb-2 sm:mb-4">
+            <p className="text-white/70 text-xs sm:text-sm">Game Code: <span className="font-mono font-bold">{gameCode}</span></p>
           </div>
           
           {/* Simon Board */}
@@ -212,8 +212,8 @@ export function WaitingRoomPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center p-4">
         <div className="text-center">
-          <h1 className="text-9xl font-bold text-white mb-4">{countdownValue}</h1>
-          <p className="text-2xl text-white/80">Get ready!</p>
+          <h1 className="text-6xl sm:text-7xl md:text-9xl font-bold text-white mb-4">{countdownValue}</h1>
+          <p className="text-lg sm:text-xl md:text-2xl text-white/80">Get ready!</p>
         </div>
       </div>
     );
@@ -221,7 +221,7 @@ export function WaitingRoomPage() {
   
   // Render waiting room
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center p-3 sm:p-4">
       {/* Toast notification */}
       {toast && (
         <Toast
@@ -231,36 +231,36 @@ export function WaitingRoomPage() {
         />
       )}
       
-      <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full">
-        <h1 className="text-3xl font-bold text-center mb-2">Waiting Room</h1>
+      <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 max-w-md sm:max-w-xl md:max-w-2xl w-full">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-2">Waiting Room</h1>
         
         {/* Game Code Display with Share Buttons */}
-        <div className="mb-8">
-          <p className="text-center text-gray-600 mb-3">
-            Game Code: <span className="font-mono font-bold text-2xl text-purple-600">{gameCode}</span>
+        <div className="mb-6 sm:mb-8">
+          <p className="text-center text-gray-600 mb-3 text-sm sm:text-base">
+            Game Code: <span className="font-mono font-bold text-xl sm:text-2xl text-purple-600">{gameCode}</span>
           </p>
           
           {/* Invite Buttons */}
-          <div className="flex gap-2 justify-center flex-wrap">
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
             <button
               onClick={copyGameCode}
-              className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+              className="bg-gray-100 hover:bg-gray-200 active:bg-gray-300 text-gray-700 font-medium py-2.5 sm:py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
               title="Copy game code"
             >
-              📋 Copy Code
+              📋 <span className="hidden sm:inline">Copy Code</span><span className="sm:hidden">Code</span>
             </button>
             
             <button
               onClick={copyInviteLink}
-              className="bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+              className="bg-blue-100 hover:bg-blue-200 active:bg-blue-300 text-blue-700 font-medium py-2.5 sm:py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
               title="Copy invite link"
             >
-              🔗 Copy Link
+              🔗 <span className="hidden sm:inline">Copy Link</span><span className="sm:hidden">Link</span>
             </button>
             
             <button
               onClick={shareGame}
-              className="bg-green-100 hover:bg-green-200 text-green-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+              className="bg-green-100 hover:bg-green-200 active:bg-green-300 text-green-700 font-medium py-2.5 sm:py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
               title="Share with friends"
             >
               📤 Share
@@ -269,8 +269,8 @@ export function WaitingRoomPage() {
         </div>
         
         {/* Players List */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">Players ({players.length})</h2>
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Players ({players.length})</h2>
           <div className="space-y-2">
             {players.map(player => (
               <div 
@@ -291,14 +291,14 @@ export function WaitingRoomPage() {
         {isHost && (
           <button
             onClick={handleStartGame}
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-6 rounded-xl transition-colors"
+            className="w-full bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-bold py-3 sm:py-4 px-6 rounded-lg sm:rounded-xl transition-colors text-base sm:text-lg"
           >
-            Start Game
+            🎮 Start Game
           </button>
         )}
         
         {!isHost && (
-          <p className="text-center text-gray-500">
+          <p className="text-center text-gray-500 text-sm sm:text-base">
             Waiting for host to start the game...
           </p>
         )}

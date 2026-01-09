@@ -35,13 +35,14 @@ export function Toast({ message, type = 'success', duration = 3000, onClose }: T
   };
 
   return (
-    <div className="fixed top-4 right-4 z-50 animate-slide-in">
-      <div className={`${bgColors[type]} text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 min-w-[300px]`}>
-        <span className="text-2xl">{icons[type]}</span>
-        <span className="font-medium">{message}</span>
+    <div className="fixed top-2 right-2 sm:top-4 sm:right-4 z-50 animate-slide-in max-w-[calc(100vw-1rem)] sm:max-w-md">
+      <div className={`${bgColors[type]} text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg shadow-lg flex items-center gap-2 sm:gap-3 min-w-[280px] sm:min-w-[300px]`}>
+        <span className="text-xl sm:text-2xl">{icons[type]}</span>
+        <span className="font-medium text-sm sm:text-base flex-1">{message}</span>
         <button
           onClick={onClose}
-          className="ml-auto text-white/80 hover:text-white transition-colors"
+          className="text-white/80 hover:text-white active:text-white transition-colors text-lg"
+          aria-label="Close"
         >
           ✕
         </button>

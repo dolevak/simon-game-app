@@ -61,11 +61,12 @@ const ColorButton: React.FC<ColorButtonProps> = ({ color, isActive, onClick, dis
       onClick={onClick}
       disabled={disabled}
       className={`
-        w-40 h-40 rounded-2xl 
+        w-28 h-28 sm:w-36 sm:h-36 md:w-40 md:h-40 
+        rounded-xl sm:rounded-2xl 
         transition-all duration-200 
         shadow-lg
         ${isActive ? activeClass : baseClass}
-        ${disabled ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'}
+        ${disabled ? 'cursor-not-allowed opacity-70' : 'cursor-pointer active:scale-95'}
       `}
       aria-label={`${color} button`}
     >
@@ -165,13 +166,13 @@ export const SimonBoard: React.FC<SimonBoardProps> = ({
   };
   
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div className="flex flex-col items-center gap-3 sm:gap-4 md:gap-6 w-full max-w-md px-2">
       {/* Round Display */}
       <div className="text-center">
-        <h2 className="text-4xl font-bold text-white mb-2">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-1 sm:mb-2">
           Round {round}
         </h2>
-        <p className="text-lg text-gray-300">
+        <p className="text-sm sm:text-base md:text-lg text-gray-300">
           {isShowingSequence 
             ? '👀 Watch the sequence!' 
             : isInputPhase
@@ -183,7 +184,7 @@ export const SimonBoard: React.FC<SimonBoardProps> = ({
       </div>
       
       {/* Color Grid (2x2) */}
-      <div className="grid grid-cols-2 gap-4 p-6 bg-gray-800 rounded-3xl shadow-2xl">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 p-3 sm:p-4 md:p-6 bg-gray-800 rounded-2xl sm:rounded-3xl shadow-2xl w-full">
         {/* Top Row: Red, Blue */}
         <ColorButton
           color="red"
@@ -215,16 +216,16 @@ export const SimonBoard: React.FC<SimonBoardProps> = ({
       
       {/* Player Sequence Display (Step 2) */}
       {isInputPhase && (
-        <div className="bg-gray-700 rounded-2xl p-4 min-w-[320px]">
-          <h3 className="text-white text-sm font-semibold mb-2 text-center">
+        <div className="bg-gray-700 rounded-xl sm:rounded-2xl p-3 sm:p-4 w-full">
+          <h3 className="text-white text-xs sm:text-sm font-semibold mb-2 text-center">
             Your Sequence ({playerSequence.length} of {sequence.length})
           </h3>
-          <div className="flex justify-center items-center gap-2 min-h-[40px]">
+          <div className="flex justify-center items-center gap-1 sm:gap-2 min-h-[32px] sm:min-h-[40px] flex-wrap">
             {playerSequence.length === 0 ? (
-              <span className="text-gray-400 text-sm">Click colors in order...</span>
+              <span className="text-gray-400 text-xs sm:text-sm">Click colors in order...</span>
             ) : (
               playerSequence.map((color, i) => (
-                <span key={i} className="text-3xl">
+                <span key={i} className="text-2xl sm:text-3xl">
                   {getColorEmoji(color)}
                 </span>
               ))
@@ -239,32 +240,42 @@ export const SimonBoard: React.FC<SimonBoardProps> = ({
           onClick={onSubmit}
           disabled={!canSubmit}
           className={`
-            px-8 py-4 rounded-xl font-bold text-lg
+            w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-lg sm:rounded-xl font-bold text-base sm:text-lg
             transition-all duration-200
             ${canSubmit 
-              ? 'bg-green-500 hover:bg-green-600 text-white cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105' 
+              ? 'bg-green-500 hover:bg-green-600 active:bg-green-700 text-white cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95' 
               : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'}
           `}
         >
-          {canSubmit ? '✅ SUBMIT' : '⏳ Complete the sequence...'}
+          {canSubmit ? (
+            <>
+              <span className="hidden sm:inline">✅ SUBMIT</span>
+              <span className="sm:hidden">✅ Submit</span>
+            </>
+          ) : (
+            <>
+              <span className="hidden sm:inline">⏳ Complete the sequence...</span>
+              <span className="sm:hidden">⏳ Complete...</span>
+            </>
+          )}
         </button>
       )}
       
       {/* Result Display (Step 2) */}
       {lastResult && (
         <div className={`
-          rounded-2xl p-6 text-center
+          rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center w-full
           ${lastResult.isCorrect 
             ? 'bg-green-500/20 border-2 border-green-500' 
             : 'bg-red-500/20 border-2 border-red-500'}
         `}>
-          <div className="text-4xl mb-2">
+          <div className="text-3xl sm:text-4xl mb-1 sm:mb-2">
             {lastResult.isCorrect ? '✅' : '❌'}
           </div>
-          <div className="text-white text-xl font-bold">
+          <div className="text-white text-lg sm:text-xl font-bold">
             {lastResult.isCorrect ? 'CORRECT!' : 'WRONG!'}
           </div>
-          <div className="text-gray-300 text-sm mt-1">
+          <div className="text-gray-300 text-xs sm:text-sm mt-1">
             {lastResult.isCorrect 
               ? 'Great job! Next round coming...' 
               : 'Better luck next time!'}
