@@ -36,7 +36,7 @@ export function WaitingRoomPage() {
   
   const [roomStatus, setRoomStatus] = useState<'waiting' | 'countdown' | 'active'>('waiting');
   const [countdownValue, setCountdownValue] = useState<number | null>(null);
-  const [isHost, setIsHost] = useState(false);
+  const [isHost, setIsHost] = useState(session?.isHost || false);
   const [players, setPlayers] = useState<any[]>([]);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   
@@ -67,7 +67,9 @@ export function WaitingRoomPage() {
       
       // Check if we're the host
       const me = room.players?.find((p: any) => p.id === playerId);
-      setIsHost(me?.isHost || false);
+      const isHostPlayer = me?.isHost || false;
+      console.log('🎮 isHost check:', { playerId, me, isHostPlayer });
+      setIsHost(isHostPlayer);
     });
     
     // Listen for room state updates (when players join/leave)
@@ -309,18 +311,25 @@ export function WaitingRoomPage() {
           </div>
         </div>
         
-        {/* Start Button (host only) */}
-        {isHost && (
-          <button
-            onClick={handleStartGame}
-            className="w-full bg-green-500 hover:bg-green-600 active:bg-green-700 active:scale-98 text-white font-bold py-3 sm:py-4 px-6 rounded-lg sm:rounded-xl transition-all duration-75 text-base sm:text-lg min-h-[56px]"
-            style={{ touchAction: 'manipulation' }}
-          >
-            🎮 Start Game
-          </button>
+        {/* Start Button (host only, or solo player) */}
+        {(isHost || players.length === 1) && (
+          <>
+            {players.length === 1 && (
+              <p className="text-center text-sm text-gray-500 mb-2">
+                💡 You can start solo or wait for others to join
+              </p>
+            )}
+            <button
+              onClick={handleStartGame}
+              className="w-full bg-green-500 hover:bg-green-600 active:bg-green-700 active:scale-98 text-white font-bold py-3 sm:py-4 px-6 rounded-lg sm:rounded-xl transition-all duration-75 text-base sm:text-lg min-h-[56px]"
+              style={{ touchAction: 'manipulation' }}
+            >
+              🎮 {players.length === 1 ? 'Start Solo Game' : 'Start Game'}
+            </button>
+          </>
         )}
         
-        {!isHost && (
+        {!isHost && players.length > 1 && (
           <p className="text-center text-gray-500 text-sm sm:text-base">
             Waiting for host to start the game...
           </p>
