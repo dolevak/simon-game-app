@@ -11,6 +11,7 @@ import { useAuthStore } from '../store/authStore';
 import { useSimonStore } from '../store/simonStore';
 import { socketService } from '../services/socketService';
 import { SimonBoard } from '../components/game/SimonBoard';
+import { Toast } from '../components/ui/Toast';
 
 export function WaitingRoomPage() {
   const { session } = useAuthStore();
@@ -37,6 +38,7 @@ export function WaitingRoomPage() {
   const [countdownValue, setCountdownValue] = useState<number | null>(null);
   const [isHost, setIsHost] = useState(false);
   const [players, setPlayers] = useState<any[]>([]);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
   
   // Initialize on mount
   useEffect(() => {
@@ -103,6 +105,59 @@ export function WaitingRoomPage() {
     socket.emit('start_game', { gameCode, playerId });
   };
   
+  // Copy game code to clipboard
+  const copyGameCode = async () => {
+    if (!gameCode) return;
+    
+    try {
+      await navigator.clipboard.writeText(gameCode);
+      setToast({ message: 'Game code copied!', type: 'success' });
+    } catch (err) {
+      setToast({ message: 'Failed to copy code', type: 'error' });
+    }
+  };
+  
+  // Copy invite link to clipboard
+  const copyInviteLink = async () => {
+    if (!gameCode) return;
+    
+    const inviteUrl = `${window.location.origin}/?join=${gameCode}`;
+    
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      setToast({ message: 'Invite link copied!', type: 'success' });
+    } catch (err) {
+      setToast({ message: 'Failed to copy link', type: 'error' });
+    }
+  };
+  
+  // Share game using native share API (mobile-friendly)
+  const shareGame = async () => {
+    if (!gameCode) return;
+    
+    const inviteUrl = `${window.location.origin}/?join=${gameCode}`;
+    
+    // Check if native share is supported
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Join my Simon Game!',
+          text: `Join me in Simon Says! Use code: ${gameCode}`,
+          url: inviteUrl,
+        });
+        setToast({ message: 'Invite shared!', type: 'success' });
+      } catch (err) {
+        // User cancelled or error - fallback to copy
+        if ((err as Error).name !== 'AbortError') {
+          copyInviteLink();
+        }
+      }
+    } else {
+      // Fallback to copy for desktop
+      copyInviteLink();
+    }
+  };
+  
   // Render game board if active
   if (roomStatus === 'active' && isGameActive) {
     return (
@@ -167,11 +222,51 @@ export function WaitingRoomPage() {
   // Render waiting room
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center p-4">
+      {/* Toast notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+      
       <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full">
         <h1 className="text-3xl font-bold text-center mb-2">Waiting Room</h1>
-        <p className="text-center text-gray-600 mb-8">
-          Game Code: <span className="font-mono font-bold text-lg">{gameCode}</span>
-        </p>
+        
+        {/* Game Code Display with Share Buttons */}
+        <div className="mb-8">
+          <p className="text-center text-gray-600 mb-3">
+            Game Code: <span className="font-mono font-bold text-2xl text-purple-600">{gameCode}</span>
+          </p>
+          
+          {/* Invite Buttons */}
+          <div className="flex gap-2 justify-center flex-wrap">
+            <button
+              onClick={copyGameCode}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+              title="Copy game code"
+            >
+              📋 Copy Code
+            </button>
+            
+            <button
+              onClick={copyInviteLink}
+              className="bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+              title="Copy invite link"
+            >
+              🔗 Copy Link
+            </button>
+            
+            <button
+              onClick={shareGame}
+              className="bg-green-100 hover:bg-green-200 text-green-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center gap-2"
+              title="Share with friends"
+            >
+              📤 Share
+            </button>
+          </div>
+        </div>
         
         {/* Players List */}
         <div className="mb-8">

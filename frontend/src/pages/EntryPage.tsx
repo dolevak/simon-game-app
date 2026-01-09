@@ -5,12 +5,13 @@
  * First screen players see.
  */
 
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { createSession, joinGame } from '../services/authService';
 import { useAuthStore } from '../store/authStore';
 
 export function EntryPage() {
+  const [searchParams] = useSearchParams();
   const [mode, setMode] = useState<'create' | 'join' | null>(null);
   const [displayName, setDisplayName] = useState('');
   const [gameCode, setGameCode] = useState('');
@@ -20,6 +21,15 @@ export function EntryPage() {
   
   const { setSession } = useAuthStore();
   const navigate = useNavigate();
+  
+  // Handle invite link with game code in URL
+  useEffect(() => {
+    const joinCode = searchParams.get('join');
+    if (joinCode) {
+      setMode('join');
+      setGameCode(joinCode.toUpperCase());
+    }
+  }, [searchParams]);
 
   const handleCreateGame = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,6 +125,11 @@ export function EntryPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Game Code
+                {searchParams.get('join') && (
+                  <span className="ml-2 text-xs text-green-600 font-normal">
+                    ✅ Pre-filled from invite link
+                  </span>
+                )}
               </label>
               <input
                 type="text"
