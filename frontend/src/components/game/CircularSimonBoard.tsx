@@ -190,10 +190,9 @@ export const CircularSimonBoard: React.FC<CircularSimonBoardProps> = ({
   
   // CRITICAL FIX: Use ref to track current sequence to avoid closure issues
   // When sequence prop changes between rounds, the ref ensures we always read the latest value
+  // Update ref immediately (not in useEffect) to ensure it's always current
   const sequenceRef = useRef<Color[]>(sequence);
-  useEffect(() => {
-    sequenceRef.current = sequence;
-  }, [sequence]);
+  sequenceRef.current = sequence; // Update synchronously, not in useEffect
 
   // Initialize audio on first user interaction
   useEffect(() => {
@@ -226,6 +225,9 @@ export const CircularSimonBoard: React.FC<CircularSimonBoardProps> = ({
       setSequenceIndex(-1);
       return;
     }
+
+    // CRITICAL: Ensure ref is up-to-date before starting animation
+    sequenceRef.current = sequence;
 
     const SHOW_DURATION = 800;  // How long each color stays lit (matches sound)
     const SHOW_GAP = 400;       // Gap between colors (all dark)
