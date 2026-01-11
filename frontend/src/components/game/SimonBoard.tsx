@@ -18,10 +18,10 @@ interface SimonBoardProps {
   isShowingSequence: boolean;
   isInputPhase: boolean;
   playerSequence: Color[];
-  canSubmit: boolean;
+  canSubmit: boolean; // Kept for compatibility but not used (auto-submit)
   lastResult: { isCorrect: boolean; playerName: string } | null;
   onColorClick: (color: Color) => void;
-  onSubmit: () => void;
+  onSubmit: () => void; // Kept for compatibility but not used (auto-submit)
   disabled?: boolean;
   // Step 3: Timer props
   secondsRemaining: number;
@@ -90,10 +90,10 @@ export const SimonBoard: React.FC<SimonBoardProps> = ({
   isShowingSequence,
   isInputPhase,
   playerSequence,
-  canSubmit,
+  canSubmit: _canSubmit, // Unused - kept for compatibility
   lastResult,
   onColorClick,
-  onSubmit,
+  onSubmit: _onSubmit, // Unused - kept for compatibility
   disabled = false,
   secondsRemaining,
   timerColor,

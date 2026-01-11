@@ -61,7 +61,7 @@ interface SimonStore {
   initializeListeners: () => void;
   cleanup: () => void;
   resetGame: () => void;
-  addColorToSequence: (color: Color) => void;
+  addColorToSequence: (color: Color, gameCode?: string, playerId?: string) => void;
   submitSequence: (gameCode: string, playerId: string) => void;
   clearPlayerSequence: () => void;
   startTimer: (timeoutAt: number, timeoutSeconds: number) => void;
