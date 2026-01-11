@@ -387,18 +387,37 @@ export const useSimonStore = create<SimonStore>((set, get) => ({
   
   /**
    * Add a color to the player's sequence
+   * Auto-submits when sequence is complete
    */
-  addColorToSequence: (color: Color) => {
+  addColorToSequence: (color: Color, gameCode?: string, playerId?: string) => {
     set((state) => {
       const newPlayerSequence = [...state.playerSequence, color];
       const canSubmit = newPlayerSequence.length === state.currentSequence.length;
+      
+      // Auto-submit when sequence is complete
+      if (canSubmit && gameCode && playerId) {
+        const socket = socketService.getSocket();
+        
+        if (socket) {
+          console.log('📤 Auto-submitting sequence:', newPlayerSequence);
+          
+          // Emit submission immediately
+          socket.emit('simon:submit_sequence', {
+            gameCode,
+            playerId,
+            sequence: newPlayerSequence,
+          });
+        }
+      }
       
       return {
         playerSequence: newPlayerSequence,
         canSubmit,
         message: canSubmit 
-          ? '✅ Sequence complete! Click Submit'
+          ? '✅ Sequence complete! Submitting...'
           : `${newPlayerSequence.length} of ${state.currentSequence.length} colors`,
+        // Disable input phase when submitting
+        ...(canSubmit && gameCode && playerId ? { isInputPhase: false } : {}),
       };
     });
   },

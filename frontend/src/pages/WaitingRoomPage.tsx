@@ -339,8 +339,9 @@ export function WaitingRoomPage() {
             playerSequence={playerSequence}
             canSubmit={canSubmit}
             lastResult={lastResult}
-            onColorClick={addColorToSequence}
+            onColorClick={(color) => addColorToSequence(color, gameCode || undefined, playerId || undefined)}
             onSubmit={() => {
+              // Submit button removed - auto-submit on sequence complete
               if (gameCode && playerId) {
                 submitSequence(gameCode, playerId);
               }
